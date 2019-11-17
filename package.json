@@ -1,0 +1,31 @@
+{
+  "name": "eccjs",
+  "version": "1.0.0",
+  "description": "Elliptic curve cryptography",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npx qunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SavchukSergey/eccjs.git"
+  },
+  "keywords": [
+    "elliptic",
+    "curve",
+    "cryptography"
+  ],
+  "author": "Sergey Savchuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SavchukSergey/eccjs/issues"
+  },
+  "homepage": "https://github.com/SavchukSergey/eccjs#readme",
+  "devDependencies": {
+    "qunit": "^2.9.3",
+    "typescript": "^3.7.2"
+  }
+}
