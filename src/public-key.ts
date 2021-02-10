@@ -1,4 +1,4 @@
-﻿import { IECAffinePoint, IECPublicKey } from "./../typings/index";
+﻿import { IECAffinePoint, IECJwk, IECPublicKey } from "./../typings/index";
 
 export default class ECPublicKey implements IECPublicKey {
 
@@ -7,7 +7,7 @@ export default class ECPublicKey implements IECPublicKey {
     ) {
     }
 
-    public jwk() {
+    public jwk(): IECJwk {
         const point = this.point;
         return {
             crv: this.point.curve.name,

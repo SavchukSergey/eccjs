@@ -1,4 +1,5 @@
-﻿import { base64urldecode, base64urlencode } from "../encoding/base64url";
+﻿import { IBezoutIdentity } from "../../typings";
+import { base64urldecode, base64urlencode } from "../encoding/base64url";
 
 const hex = "0123456789abcdef";
 
@@ -67,7 +68,7 @@ export default class BigInteger {
         return res;
     }
 
-    public unsignedBase64Url(length: number = -1): string {
+    public unsignedBase64Url(length = -1): string {
         const data = this.buffer;
         if (length >= 0) {
             const newBuffer = new Uint8Array(length);
@@ -404,7 +405,7 @@ export default class BigInteger {
         return new BigInteger(trimHighest(res));
     }
 
-    public static euclidExtended(a: BigInteger, b: BigInteger) {
+    public static euclidExtended(a: BigInteger, b: BigInteger): IBezoutIdentity {
         let s0 = BigInteger.one();
         let t0 = BigInteger.zero();
         let s1 = BigInteger.zero();

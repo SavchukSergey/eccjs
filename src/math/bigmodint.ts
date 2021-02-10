@@ -8,7 +8,7 @@ export default class BigModInteger {
     ) {
     }
 
-    public unsignedBase64Url(length: number = -1): string {
+    public unsignedBase64Url(length = -1): string {
         return this.value.unsignedBase64Url(length);
     }
 
@@ -101,11 +101,11 @@ export default class BigModInteger {
         return this.value.zero();
     }
 
-    public static zero(modulus: BigInteger) {
+    public static zero(modulus: BigInteger): BigModInteger {
         return new BigModInteger(BigInteger.zero(), modulus);
     }
 
-    public static one(modulus: BigInteger) {
+    public static one(modulus: BigInteger): BigModInteger {
         return new BigModInteger(BigInteger.one(), modulus);
     }
 

@@ -66,3 +66,18 @@ export interface IECurveHex {
     readonly order: string;
     readonly cofactor: string;
 }
+
+export interface IECJwk {
+    readonly crv: string;
+    readonly kty: "EC";
+    readonly x: string;
+    readonly y: string;
+}
+
+export interface IBezoutIdentity {
+    readonly x: BigInteger;
+    readonly y: BigInteger;
+    readonly a: BigInteger;
+    readonly b: BigInteger;
+    readonly gcd: BigInteger;
+}

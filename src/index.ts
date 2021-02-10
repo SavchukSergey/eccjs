@@ -1,4 +1,4 @@
-﻿export { ECurveCached, LocalStorageCache, PointCacheAccess } from "./cache";
+﻿export { ECurveCached, PointCacheAccess } from "./cache";
 export { ECurve } from "./curve";
 export { default as ECAffinePoint } from "./point-affine";
 export { default as ECProjectivePoint } from "./point-projective";

@@ -73,7 +73,7 @@ export class ECAffinePointCached extends ECAffinePoint {
         }
     }
 }
-
+/*
 export class LocalStorageCache implements ICacheAccess {
 
     public derive(key: string): ICacheAccess {
@@ -102,7 +102,7 @@ export class LocalStorageCache implements ICacheAccess {
     }
 
 }
-
+*/
 export class PointCacheAccess implements IPointCacheAccess {
 
     public derive(key: string): IPointCacheAccess {
