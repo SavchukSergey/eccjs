@@ -53,14 +53,22 @@ export default class BigInteger {
     ) {
     }
 
-    public unsignedHex(): string {
+    /**
+     * Serializes biginteger to big-endian hex string
+     * @param length Explicit output length in bytes
+     */
+    public unsignedHex(length?: number): string {
         const buffer = this.buffer;
-        const len = buffer.length;
-        if (!len) {
-            return "0";
+        length = length ?? buffer.length;
+        const availableLength = Math.min(buffer.length, length);
+        if (!length) {
+            return "00";
         }
         let res = "";
-        for (let i = 0; i < len; i++) {
+        for (let i = availableLength; i < length; i++) {
+            res += "00";
+        }
+        for (let i = 0; i < availableLength; i++) {
             const bt = buffer[i];
             res += hex.charAt(bt >> 4);
             res += hex.charAt(bt & 0x0f);
@@ -99,6 +107,11 @@ export default class BigInteger {
         return BigIntegerSign.zero;
     }
 
+    /**
+     * Check whether current number is greater or equal then the other
+     * @param other Number to be compared with
+     * @returns true if this number is greater or equal then the other
+     */
     public gteq(other: BigInteger): boolean {
         const sign = this.compare(other);
         return sign === BigIntegerSign.zero || sign === BigIntegerSign.positive;
