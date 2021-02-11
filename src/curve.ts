@@ -1,7 +1,8 @@
-﻿import { BigInteger, BigModInteger } from "./math/index";
+﻿import { IECAffinePoint, IECPrivateKey, IECPublicKey, IECurve, IECurveHex } from "./../typings/index";
+import { GeneratorPointProjective } from "./generator-point";
+import { BigInteger, BigModInteger } from "./math/index";
 import ECAffinePoint from "./point-affine";
 import ECPrivateKey from "./private-key";
-import { IECAffinePoint, IECPrivateKey, IECPublicKey, IECurve, IECurveHex } from "./../typings/index";
 import ECPublicKey from "./public-key";
 
 const knownCache: {
@@ -27,6 +28,8 @@ export class ECurve implements IECurve {
     public readonly keySize8 = 32;
     public readonly orderSize8 = 32;
 
+    private readonly generatorPoint: GeneratorPointProjective;
+
     constructor(
         public readonly name: string,
         a: BigInteger,
@@ -40,6 +43,7 @@ export class ECurve implements IECurve {
         this.a = new BigModInteger(a.modAbs(modulus), modulus);
         this.b = new BigModInteger(b.modAbs(modulus), modulus);
         this.g = this.createPoint(gx, gy);
+        this.generatorPoint = new GeneratorPointProjective(this.g.projective());
     }
 
     public has(p: IECAffinePoint): boolean {
@@ -60,8 +64,7 @@ export class ECurve implements IECurve {
     }
 
     public createPublicKey(d: BigInteger): IECPublicKey {
-        const dMod = new BigModInteger(d, this.modulus);
-        return new ECPublicKey(this.g.projective().mul(dMod).affine());
+        return new ECPublicKey(this.generatorPoint.mul(d).affine());
     }
 
     public truncateHash(val: BigInteger): BigInteger {
