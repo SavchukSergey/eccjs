@@ -1,6 +1,6 @@
-﻿import { BigInteger, BigModInteger } from "./math/index";
-import ECPublicKey from "./public-key";
-import { IECPrivateKey, IECPublicKey, IECurve } from "./../typings/index";
+﻿import { IECPrivateKey, IECPublicKey, IECurve } from "./../typings/index";
+import { BigInteger, BigModInteger } from "./math/index";
+import ECSignature from "./signature";
 
 export default class ECPrivateKey implements IECPrivateKey {
 
@@ -18,11 +18,29 @@ export default class ECPrivateKey implements IECPrivateKey {
         if (existing) {
             return existing;
         }
-        const result = new ECPublicKey(this.curve.g.projective().mul(this.d).affine());
+        const result = this.curve.createPublicKey(this.d.value);
         this.publicKeyCache = result;
         return result;
     }
 
     private publicKeyCache: IECPublicKey | null = null;
+
+    public sign(message: BigInteger, random: BigInteger): ECSignature {
+        const truncated = this.curve.truncateHash(message);
+        return this.signTruncated(truncated, random);
+    }
+
+    private signTruncated(message: BigInteger, random: BigInteger): ECSignature {
+        const { curve, d } = this;
+        const { order } = curve;
+        const randomMod = new BigModInteger(random, order);
+        const msgMod = new BigModInteger(message, order);
+        const p = curve.createPublicKey(randomMod.value).point;
+        const r = new BigModInteger(p.x.value.modAbs(order), order);
+        if (r.zero()) return null;
+        const s = ((msgMod.add(r.mul(d))).mul(randomMod.inverse()));
+        if (s.zero()) return null;
+        return new ECSignature(r.value, s.value, curve);
+    }
 
 }

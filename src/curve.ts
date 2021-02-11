@@ -1,7 +1,8 @@
 ﻿import { BigInteger, BigModInteger } from "./math/index";
 import ECAffinePoint from "./point-affine";
 import ECPrivateKey from "./private-key";
-import { IECAffinePoint, IECPrivateKey, IECurve, IECurveHex } from "./../typings/index";
+import { IECAffinePoint, IECPrivateKey, IECPublicKey, IECurve, IECurveHex } from "./../typings/index";
+import ECPublicKey from "./public-key";
 
 const knownCache: {
     [key: string]: ECurve | undefined
@@ -53,6 +54,19 @@ export class ECurve implements IECurve {
 
     public createPrivateKey(d: BigInteger): IECPrivateKey {
         return new ECPrivateKey(d, this);
+    }
+
+    public createPublicKey(d: BigInteger): IECPublicKey {
+        const dMod = new BigModInteger(d, this.modulus);
+        return new ECPublicKey(this.g.projective().mul(dMod).affine());
+    }
+
+    public truncateHash(val: BigInteger): BigInteger {
+        const order = this.order;
+        while (val.gteq(order)) {
+            val = val.half();
+        }
+        return val;
     }
 
     public static nistP256(): IECurve {

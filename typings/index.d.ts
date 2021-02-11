@@ -10,8 +10,10 @@ export interface IECurve {
     readonly cofactor: BigInteger;
 
     createPrivateKey(d: BigInteger): IECPrivateKey;
+    createPublicKey(d: BigInteger): IECPublicKey;
     createPoint(x: BigInteger, y: BigInteger): IECAffinePoint;
     has(point: IECAffinePoint): boolean;
+    truncateHash(val: BigInteger): BigInteger;
 }
 
 export interface IECAffinePoint {
@@ -54,6 +56,7 @@ export interface IECPublicKey {
 export interface IECPrivateKey {
     readonly d: BigModInteger;
     publicKey(): IECPublicKey;
+    sign(message: BigInteger, random: BigInteger): IECSignature;
 }
 
 export interface IECurveHex {
@@ -80,4 +83,11 @@ export interface IBezoutIdentity {
     readonly a: BigInteger;
     readonly b: BigInteger;
     readonly gcd: BigInteger;
+}
+
+export interface IECSignature {
+    readonly r: BigInteger;
+    readonly s: BigInteger;
+    readonly curve: IECurve;
+    hexString(): string;
 }

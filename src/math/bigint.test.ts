@@ -279,4 +279,19 @@ describe("BigInt", () => {
             expect(BigInteger.parseUnsignedHex("ff").unsignedHex()).toBe("00ff");
         });
     });
+
+    describe("unsignedHex", () => {
+        it("should get hex string with auto-length", () => {
+            const val = BigInteger.parseUnsignedHex("452189");
+            expect(val.unsignedHex()).toBe("452189");
+        });
+        it("should get hex string with small length", () => {
+            const val = BigInteger.parseUnsignedHex("452189");
+            expect(val.unsignedHex(1)).toBe("45");
+        });
+        it("should get hex string with large length", () => {
+            const val = BigInteger.parseUnsignedHex("452189");
+            expect(val.unsignedHex(5)).toBe("0000452189");
+        });
+    });
 });
