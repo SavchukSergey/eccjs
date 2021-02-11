@@ -287,11 +287,15 @@ describe("BigInt", () => {
         });
         it("should get hex string with small length", () => {
             const val = BigInteger.parseUnsignedHex("452189");
-            expect(val.unsignedHex(1)).toBe("45");
+            expect(val.unsignedHex(1)).toBe("89");
         });
         it("should get hex string with large length", () => {
             const val = BigInteger.parseUnsignedHex("452189");
             expect(val.unsignedHex(5)).toBe("0000452189");
+        });
+        it("should get hex string with trailing zeros", () => {
+            const val = BigInteger.parseUnsignedHex("00452189");
+            expect(val.unsignedHex(3)).toBe("452189");
         });
     });
 });

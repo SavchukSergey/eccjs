@@ -12,8 +12,12 @@ export default class BigModInteger {
         return this.value.unsignedBase64Url(length);
     }
 
-    public unsignedHex(): string {
-        return this.value.unsignedHex();
+    public unsignedHex(length?: number): string {
+        return this.value.unsignedHex(length);
+    }
+
+    public even(): boolean {
+        return this.value.even();
     }
 
     public add(other: BigModInteger): BigModInteger {
@@ -99,6 +103,13 @@ export default class BigModInteger {
 
     public zero(): boolean {
         return this.value.zero();
+    }
+
+    /**
+     * Get bytes count
+     */
+    public get length8(): number {
+        return this.value.length8;
     }
 
     public static zero(modulus: BigInteger): BigModInteger {

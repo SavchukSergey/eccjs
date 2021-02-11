@@ -10,9 +10,9 @@ export default class ECSignature implements IECSignature {
     ) {
     }
 
-    public hexString(): string {
-        const { r, s } = this;
-        const order8 = 32; // todo
+    public hex(): string {
+        const { r, s, curve } = this;
+        const order8 = curve.orderSize8;
         return `${r.unsignedHex(order8)}${s.unsignedHex(order8)}`;
     }
 

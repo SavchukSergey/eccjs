@@ -1,6 +1,6 @@
-﻿import { BigModInteger } from "./math/index";
+﻿import { IECAffinePoint, IECProjectivePoint, IECurve } from "./../typings/index";
+import { BigModInteger } from "./math/index";
 import ECAffinePoint from "./point-affine";
-import { IECAffinePoint, IECProjectivePoint, IECurve } from "./../typings/index";
 
 export default class ECProjectivePoint implements IECProjectivePoint {
 
@@ -86,10 +86,12 @@ export default class ECProjectivePoint implements IECProjectivePoint {
     public mul(k: BigModInteger): IECProjectivePoint {
         let acc = ECProjectivePoint.infinity(this.curve);
         let add: IECProjectivePoint = this;
-        while (!k.zero()) {
-            if (k.odd()) acc = acc.add(add);
+        const len8 = k.length8;
+        for (let i = 0; i < len8 * 8; i++) {
+            if (k.bit(i)) {
+                acc = acc.add(add);
+            }
             add = add.double();
-            k = k.half();
         }
         return acc;
     }

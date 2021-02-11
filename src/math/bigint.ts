@@ -60,15 +60,15 @@ export default class BigInteger {
     public unsignedHex(length?: number): string {
         const buffer = this.buffer;
         length = length ?? buffer.length;
-        const availableLength = Math.min(buffer.length, length);
         if (!length) {
             return "00";
         }
         let res = "";
-        for (let i = availableLength; i < length; i++) {
+        for (let i = buffer.length; i < length; i++) {
             res += "00";
         }
-        for (let i = 0; i < availableLength; i++) {
+        const extra = Math.max(0, buffer.length - length);
+        for (let i = extra; i < buffer.length; i++) {
             const bt = buffer[i];
             res += hex.charAt(bt >> 4);
             res += hex.charAt(bt & 0x0f);
@@ -253,6 +253,13 @@ export default class BigInteger {
         return this.buffer.length;
     }
 
+    /**
+     * Get bytes count
+     */
+    public get length8(): number {
+        return this.buffer.length;
+    }
+
     public abs(): BigInteger {
         if (this.sign() === BigIntegerSign.negative) {
             return this.negate();
@@ -358,6 +365,12 @@ export default class BigInteger {
         const buffer = this.buffer;
         const len = buffer.length;
         return ((len && buffer[len - 1]) & 0x01) > 0;
+    }
+
+    public even(): boolean {
+        const buffer = this.buffer;
+        const len = buffer.length;
+        return ((len && buffer[len - 1]) & 0x01) === 0;
     }
 
     public static zero(): BigInteger {

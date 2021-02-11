@@ -9,6 +9,9 @@ export interface IECurve {
     readonly order: BigInteger;
     readonly cofactor: BigInteger;
 
+    readonly keySize8: number;
+    readonly orderSize8: number;
+
     createPrivateKey(d: BigInteger): IECPrivateKey;
     createPublicKey(d: BigInteger): IECPublicKey;
     createPoint(x: BigInteger, y: BigInteger): IECAffinePoint;
@@ -30,6 +33,8 @@ export interface IECAffinePoint {
 
     infinity(): boolean;
     valid(): boolean;
+
+    hex(compress: boolean): string;
 }
 
 export interface IECProjectivePoint {
@@ -51,6 +56,7 @@ export interface IECProjectivePoint {
 
 export interface IECPublicKey {
     readonly point: IECAffinePoint;
+    hex(compress: boolean = true): string;
 }
 
 export interface IECPrivateKey {
@@ -89,5 +95,5 @@ export interface IECSignature {
     readonly r: BigInteger;
     readonly s: BigInteger;
     readonly curve: IECurve;
-    hexString(): string;
+    hex(): string;
 }

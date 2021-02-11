@@ -24,6 +24,9 @@ export class ECurve implements IECurve {
     public readonly b: BigModInteger;
     public readonly g: IECAffinePoint;
 
+    public readonly keySize8 = 32;
+    public readonly orderSize8 = 32;
+
     constructor(
         public readonly name: string,
         a: BigInteger,

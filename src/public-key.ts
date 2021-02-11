@@ -17,4 +17,8 @@ export default class ECPublicKey implements IECPublicKey {
         };
     }
 
+    public hex(compress = true): string {
+        return this.point.hex(compress);
+    }
+
 }

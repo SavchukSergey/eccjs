@@ -59,16 +59,30 @@ export default class ECAffinePoint implements IECAffinePoint {
     public mul(k: BigModInteger): IECAffinePoint {
         let acc = ECAffinePoint.infinity(this.curve);
         let add: IECAffinePoint = this;
-        while (!k.zero()) {
-            if (k.odd()) acc = acc.add(add);
-            add = add.add(add);
-            k = k.half();
+        const len8 = k.length8;
+        for (let i = 0; i < len8 * 8; i++) {
+            if (k.bit(i)) {
+                acc = acc.add(add);
+            }
+            add = add.double();
         }
         return acc;
+
     }
 
     public negate(): IECAffinePoint {
         return new ECAffinePoint(this.x, this.y.negate(), this.curve);
+    }
+
+    public hex(compress = true): string {
+        if (this.infinity()) {
+            return "00";
+        }
+        const keySize8 = this.curve.keySize8;
+        if (compress) {
+            return (this.y.even() ? "02" : "03") + this.x.unsignedHex(keySize8);
+        }
+        return `04${this.x.unsignedHex(keySize8)}${this.y.unsignedHex(keySize8)}`;
     }
 
     public infinity(): boolean {
