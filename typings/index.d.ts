@@ -19,7 +19,13 @@ export interface IECurve {
     truncateHash(val: BigInteger): BigInteger;
 }
 
-export interface IECAffinePoint {
+export interface IECPoint<TPoint> {
+    mul(k: BigInteger): TPoint;
+    double(): TPoint;
+    add(other: TPoint): TPoint;
+}
+
+export interface IECAffinePoint extends IECPoint<IECAffinePoint> {
     readonly x: BigModInteger;
     readonly y: BigModInteger;
     readonly curve: IECurve;
@@ -28,7 +34,7 @@ export interface IECAffinePoint {
 
     double(): IECAffinePoint;
     add(other: IECAffinePoint): IECAffinePoint;
-    mul(k: BigModInteger): IECAffinePoint;
+    mul(k: BigInteger): IECAffinePoint;
     negate(): IECAffinePoint;
 
     infinity(): boolean;
@@ -47,7 +53,7 @@ export interface IECProjectivePoint {
 
     double(): IECProjectivePoint;
     add(other: IECProjectivePoint): IECProjectivePoint;
-    mul(k: BigModInteger): IECProjectivePoint;
+    mul(k: BigInteger): IECProjectivePoint;
     negate(): IECProjectivePoint;
 
     infinity(): boolean;
@@ -62,7 +68,7 @@ export interface IECPublicKey {
 export interface IECPrivateKey {
     readonly d: BigModInteger;
     publicKey(): IECPublicKey;
-    sign(message: BigInteger, random: BigInteger): IECSignature;
+    sign(message: BigInteger, random: BigInteger): IECSignature | null;
 }
 
 export interface IECurveHex {

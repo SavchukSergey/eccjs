@@ -10,7 +10,9 @@ describe("ECPrivateKey", () => {
         const random = BigInteger.parseUnsignedHex("cd6f06360fa5af8415f7a678ab45d8c1d435f8cf054b0f5902237e8cb9ee5fe5");
         const signature = privateKey.sign(msg, random);
 
-        expect(signature).toBeTruthy();
+        if (!signature) {
+            fail();
+        }
 
         const rhex = signature.r.unsignedHex(32);
         const shex = signature.s.unsignedHex(32);

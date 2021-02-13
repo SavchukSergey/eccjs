@@ -1,7 +1,7 @@
 ﻿import { IECAffinePoint, IECPrivateKey, IECPublicKey, IECurve, IECurveHex } from "./../typings/index";
-import { GeneratorPointProjective } from "./generator-point";
-import { BigInteger, BigModInteger } from "./math/index";
+import { BigInteger, BigModInteger } from "./math";
 import ECAffinePoint from "./point-affine";
+import { GeneratorPointProjective } from "./point-generator";
 import ECPrivateKey from "./private-key";
 import ECPublicKey from "./public-key";
 
@@ -56,7 +56,7 @@ export class ECurve implements IECurve {
 
     public createPoint(x: BigInteger, y: BigInteger): IECAffinePoint {
         const modulus = this.modulus;
-        return new ECAffinePoint(new BigModInteger(x.modAbs(modulus), modulus), new BigModInteger(y.modAbs(modulus), modulus), this);
+        return new ECAffinePoint(x.modAbs(modulus), y.modAbs(modulus), this);
     }
 
     public createPrivateKey(d: BigInteger): IECPrivateKey {

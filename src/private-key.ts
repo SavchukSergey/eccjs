@@ -25,12 +25,12 @@ export default class ECPrivateKey implements IECPrivateKey {
 
     private publicKeyCache: IECPublicKey | null = null;
 
-    public sign(message: BigInteger, random: BigInteger): ECSignature {
+    public sign(message: BigInteger, random: BigInteger): ECSignature | null{
         const truncated = this.curve.truncateHash(message);
         return this.signTruncated(truncated, random);
     }
 
-    private signTruncated(message: BigInteger, random: BigInteger): ECSignature {
+    private signTruncated(message: BigInteger, random: BigInteger): ECSignature | null {
         const { curve, d } = this;
         const { order } = curve;
         const randomMod = new BigModInteger(random, order);

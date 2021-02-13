@@ -1,19 +1,24 @@
 ﻿import { IECAffinePoint, IECProjectivePoint, IECurve } from "./../typings/index";
-import { BigModInteger } from "./math/index";
+import { BigInteger, BigModInteger } from "./math";
 import ECProjectivePoint from "./point-projective";
 
 export default class ECAffinePoint implements IECAffinePoint {
 
+    public readonly x: BigModInteger;
+    public readonly y: BigModInteger;
+
     constructor(
-        public readonly x: BigModInteger,
-        public readonly y: BigModInteger,
+        x: BigInteger,
+        y: BigInteger,
         public readonly curve: IECurve
     ) {
+        this.x = new BigModInteger(x, curve.modulus);
+        this.y = new BigModInteger(y, curve.modulus);
     }
 
     public projective(): IECProjectivePoint {
         const curve = this.curve;
-        return new ECProjectivePoint(this.x, this.y, BigModInteger.one(curve.modulus), curve);
+        return new ECProjectivePoint(this.x.value, this.y.value, BigInteger.one(), curve);
     }
 
     public valid(): boolean {
@@ -53,10 +58,10 @@ export default class ECAffinePoint implements IECAffinePoint {
         const rx = m.square().sub(left.x).sub(right.x);
         const ry = m.mul(left.x.sub(rx)).sub(left.y);
 
-        return new ECAffinePoint(rx, ry, curve);
+        return new ECAffinePoint(rx.value, ry.value, curve);
     }
 
-    public mul(k: BigModInteger): IECAffinePoint {
+    public mul(k: BigInteger): IECAffinePoint {
         let acc = ECAffinePoint.infinity(this.curve);
         let add: IECAffinePoint = this;
         const len8 = k.length8;
@@ -71,7 +76,7 @@ export default class ECAffinePoint implements IECAffinePoint {
     }
 
     public negate(): IECAffinePoint {
-        return new ECAffinePoint(this.x, this.y.negate(), this.curve);
+        return new ECAffinePoint(this.x.value, this.y.negate().value, this.curve);
     }
 
     public hex(compress = true): string {
@@ -90,7 +95,7 @@ export default class ECAffinePoint implements IECAffinePoint {
     }
 
     public static infinity(curve: IECurve): IECAffinePoint {
-        const zero = BigModInteger.zero(curve.modulus);
+        const zero = BigInteger.zero();
         return new ECAffinePoint(zero, zero, curve);
     }
 }

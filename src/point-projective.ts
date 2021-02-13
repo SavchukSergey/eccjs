@@ -1,23 +1,30 @@
 ﻿import { IECAffinePoint, IECProjectivePoint, IECurve } from "./../typings/index";
-import { BigModInteger } from "./math/index";
+import { BigInteger, BigModInteger } from "./math";
 import ECAffinePoint from "./point-affine";
 
 export default class ECProjectivePoint implements IECProjectivePoint {
 
+    public readonly x: BigModInteger;
+    public readonly y: BigModInteger;
+    public readonly z: BigModInteger;
+
     constructor(
-        public readonly x: BigModInteger,
-        public readonly y: BigModInteger,
-        public readonly z: BigModInteger,
+        x: BigInteger,
+        y: BigInteger,
+        z: BigInteger,
         public readonly curve: IECurve
     ) {
+        this.x = new BigModInteger(x, curve.modulus);
+        this.y = new BigModInteger(y, curve.modulus);
+        this.z = new BigModInteger(z, curve.modulus);
     }
 
     public affine(): IECAffinePoint {
         const curve = this.curve;
         const div = this.z.inverse();
         return new ECAffinePoint(
-            this.x.mul(div),
-            this.y.mul(div),
+            this.x.mul(div).value,
+            this.y.mul(div).value,
             curve);
     }
 
@@ -26,10 +33,10 @@ export default class ECProjectivePoint implements IECProjectivePoint {
     }
 
     public double(): IECProjectivePoint {
-        if (this.y.zero()) {
-            return ECProjectivePoint.infinity(this.curve);
-        }
         const { x, y, z, curve } = this;
+        if (y.zero()) {
+            return ECProjectivePoint.infinity(curve);
+        }
         const t = x.square().triple().add(curve.a.mul(z.square()));
 
         const u = y.mul(z).double();
@@ -40,7 +47,7 @@ export default class ECProjectivePoint implements IECProjectivePoint {
         const x2 = u.mul(w);
         const y2 = t.mul(v.sub(w)).sub(uy.square().double());
         const z2 = u.cube();
-        return new ECProjectivePoint(x2, y2, z2, curve);
+        return new ECProjectivePoint(x2.value, y2.value, z2.value, curve);
     }
 
     public add(other: IECProjectivePoint): IECProjectivePoint {
@@ -80,10 +87,10 @@ export default class ECProjectivePoint implements IECProjectivePoint {
         const y2 = t.mul(u0.mul(u2).sub(w)).sub(t0.mul(u3));
         const z2 = u3.mul(v);
 
-        return new ECProjectivePoint(x2, y2, z2, curve);
+        return new ECProjectivePoint(x2.value, y2.value, z2.value, curve);
     }
 
-    public mul(k: BigModInteger): IECProjectivePoint {
+    public mul(k: BigInteger): IECProjectivePoint {
         let acc = ECProjectivePoint.infinity(this.curve);
         let add: IECProjectivePoint = this;
         const len8 = k.length8;
@@ -97,7 +104,7 @@ export default class ECProjectivePoint implements IECProjectivePoint {
     }
 
     public negate(): ECProjectivePoint {
-        return new ECProjectivePoint(this.x, this.y.negate(), this.z, this.curve);
+        return new ECProjectivePoint(this.x.value, this.y.negate().value, this.z.value, this.curve);
     }
 
     public infinity(): boolean {
@@ -105,7 +112,7 @@ export default class ECProjectivePoint implements IECProjectivePoint {
     }
 
     public static infinity(curve: IECurve): IECProjectivePoint {
-        const zero = BigModInteger.zero(curve.modulus);
+        const zero = BigInteger.zero();
         return new ECProjectivePoint(zero, zero, zero, curve);
     }
 }

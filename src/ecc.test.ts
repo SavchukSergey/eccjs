@@ -1,5 +1,5 @@
 ﻿import { ECAffinePoint, ECurve } from "../src";
-import { BigInteger, BigModInteger } from "../src/math";
+import { BigInteger } from "../src/math";
 
 const rfc7517Sample = {
     d: "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE",
@@ -113,7 +113,7 @@ describe("Ecc", () => {
                 const k = testCase[0];
                 const x = BigInteger.fromValue(testCase[1]);
                 const y = BigInteger.fromValue(testCase[2]);
-                const p2 = p1.mul(new BigModInteger(BigInteger.fromValue(k), shortCurve.modulus));
+                const p2 = p1.mul(BigInteger.fromValue(k));
                 expect(shortCurve.has(p2)).toBe(true);
                 if (x.zero() && y.zero()) {
                     expect(p2.infinity()).toBe(true);
