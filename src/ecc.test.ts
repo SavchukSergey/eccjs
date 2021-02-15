@@ -8,6 +8,7 @@ const rfc7517Sample = {
 };
 
 describe("Ecc", () => {
+
     const curve = new ECurve("test",
         BigInteger.fromValue(-1),
         BigInteger.fromValue(3),
@@ -17,27 +18,33 @@ describe("Ecc", () => {
         BigInteger.zero(),
         BigInteger.zero());
 
+    const nistP256 = ECurve.nistP256();
+
     describe("curve", () => {
         describe("createPrivateKey", () => {
             it("RFC7517 sample", () => {
                 const d = BigInteger.parseUnsignedBase64Url(rfc7517Sample.d);
-                const nistP256 = ECurve.nistP256();
                 const privateKey = nistP256.createPrivateKey(d);
                 expect(privateKey.d.unsignedBase64Url(32)).toBe(rfc7517Sample.d);
             });
         });
         describe("has", () => {
             it("Has valid point", () => {
-                const p256 = ECurve.nistP256();
                 expect(curve.has(curve.createPoint(BigInteger.fromValue(16), BigInteger.fromValue(20)))).toBe(true);
-                expect(p256.has(p256.createPoint(BigInteger.parseUnsignedBase64Url(rfc7517Sample.x), BigInteger.parseUnsignedBase64Url(rfc7517Sample.y)))).toBe(true);
+                expect(nistP256.has(nistP256.createPoint(BigInteger.parseUnsignedBase64Url(rfc7517Sample.x), BigInteger.parseUnsignedBase64Url(rfc7517Sample.y)))).toBe(true);
             });
             it("Does not have invalid point", () => {
                 expect(curve.has(curve.createPoint(BigInteger.fromValue(15), BigInteger.fromValue(20)))).toBe(false);
                 expect(curve.has(curve.createPoint(BigInteger.fromValue(16), BigInteger.fromValue(21)))).toBe(false);
             });
             it("Has infinity point", () => {
-                expect(curve.has(ECAffinePoint.infinity(curve))).toBe(true);
+                expect(nistP256.has(ECAffinePoint.infinity(nistP256))).toBe(true);
+            });
+        });
+
+        describe("namedCurves", () => {
+            it("should use caching", () => {
+                expect(ECurve.nistP256()).toStrictEqual(ECurve.nistP256());
             });
         });
     });
@@ -46,7 +53,6 @@ describe("Ecc", () => {
         describe("Derive PublicKey", () => {
             it("RFC7517 sample", () => {
                 const d = BigInteger.parseUnsignedBase64Url(rfc7517Sample.d);
-                const nistP256 = ECurve.nistP256();
                 const privateKey = nistP256.createPrivateKey(d);
 
                 const publicKey = privateKey.publicKey();
@@ -124,4 +130,22 @@ describe("Ecc", () => {
             }
         });
     });
+
+    describe("privateKey -> publicKey performance", () => {
+        it("should work", () => {
+            const count = 10;
+            const start = new Date().valueOf();
+            for (let i = 0; i < count; i++) {
+                const rnd = BigInteger.random(256);
+                const keyPair = nistP256.createPrivateKey(rnd);
+                const pubKey = keyPair.publicKey();
+                expect(pubKey).toBeTruthy();
+            }
+            const end = new Date().valueOf();
+            const secs = (end - start) / 1000;
+            const kps = count / secs;
+            console.log(`keys per second: ${kps}`);
+        });
+    });
+
 });

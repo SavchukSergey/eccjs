@@ -459,4 +459,13 @@ export default class BigInteger {
         };
     }
 
+    public static random(lengthBits: number): BigInteger {
+        const data = new Uint8Array((lengthBits + 7) >> 3);
+        for (let i = 0; i < lengthBits; i++) {
+            const bitValue = Math.random() >= 0.5;
+            data[i >> 3] |= (bitValue ? 1 : 0) << (i & 0x07);
+        }
+        return new BigInteger(data);
+    }
+
 }
